@@ -170,11 +170,11 @@ variable {L : Type} [Field L] [NumberField L]
 theorem exists_pow_congr (v : HeightOneSpectrum (𝓞 L)) (n : ℕ) :
     ∃ m : ℕ, 0 < m ∧ ∀ x : (v.adicCompletion L)ˣ, Formalism.L2.Host.IsUnitAt v x →
       Valued.v (((x ^ m : (v.adicCompletion L)ˣ) : v.adicCompletion L) - 1) ≤ WithZero.exp (-(n : ℤ)) := by
-  have hu : Valued.v ((atFin v (unif v) : (v.adicCompletion L)ˣ) : v.adicCompletion L) = WithZero.exp (-1 : ℤ) :=
-    unif_spec v
-  have hc : Valued.v (((atFin v (unif v) : (v.adicCompletion L)ˣ) : v.adicCompletion L) ^ n) = WithZero.exp (-(n : ℤ)) := by
+  have hu : Valued.v ((GlobalTheory.Mem.Chr.atFin v (GlobalTheory.Mem.Chr.unif v) : (v.adicCompletion L)ˣ) : v.adicCompletion L) = WithZero.exp (-1 : ℤ) :=
+    GlobalTheory.Mem.Chr.unif_spec v
+  have hc : Valued.v (((GlobalTheory.Mem.Chr.atFin v (GlobalTheory.Mem.Chr.unif v) : (v.adicCompletion L)ˣ) : v.adicCompletion L) ^ n) = WithZero.exp (-(n : ℤ)) := by
     rw [map_pow, hu, ← WithZero.exp_nsmul]; simp
-  have hc1 : ((atFin v (unif v) : (v.adicCompletion L)ˣ) : v.adicCompletion L) ^ n ∈ v.adicCompletionIntegers L := by
+  have hc1 : ((GlobalTheory.Mem.Chr.atFin v (GlobalTheory.Mem.Chr.unif v) : (v.adicCompletion L)ˣ) : v.adicCompletion L) ^ n ∈ v.adicCompletionIntegers L := by
     rw [HeightOneSpectrum.mem_adicCompletionIntegers, hc, ← WithZero.exp_zero, WithZero.exp_le_exp]
     omega
   let c : v.adicCompletionIntegers L := ⟨_, hc1⟩
@@ -195,11 +195,15 @@ theorem exists_pow_congr (v : HeightOneSpectrum (𝓞 L)) (n : ℕ) :
     rw [map_pow, map_one]
     exact congrArg Units.val h1
   obtain ⟨a, ha⟩ := Ideal.mem_span_singleton'.1 (Ideal.Quotient.eq.1 h2)
-  have h3 : (a : v.adicCompletion L) * ((atFin v (unif v) : (v.adicCompletion L)ˣ) : v.adicCompletion L) ^ n =
+  have h3 : (a : v.adicCompletion L) * ((GlobalTheory.Mem.Chr.atFin v (GlobalTheory.Mem.Chr.unif v) : (v.adicCompletion L)ˣ) : v.adicCompletion L) ^ n =
       (x : v.adicCompletion L) ^ Nat.card (v.adicCompletionIntegers L ⧸ Ideal.span {c})ˣ - 1 :=
     congrArg Subtype.val ha
   rw [Units.val_pow_eq_pow_val, ← h3, map_mul, hc]
   exact mul_le_of_le_one_left' a.2
+
+local notation "HChar" => _root_.Formalism.L2.Host.HChar
+local notation "Ideles" => _root_.Neutral.B1.Ideles
+local notation "infIdele" => _root_.ReciprocityTheory.Neutral.Bridge.HCFR.infIdele
 
 theorem triv_inf (χ : HChar L) (h : ∀ k, χ.inf k = 1) (u : ∀ w : InfinitePlace L, (w.Completion)ˣ) :
     χ.1 (∏ w, infIdele L w (u w)) = 1 := by
@@ -208,8 +212,8 @@ theorem triv_inf (χ : HChar L) (h : ∀ k, χ.inf k = 1) (u : ∀ w : InfiniteP
     · exact χ.2.1.comp (continuous_finsetProd _ fun w _ =>
         (GlobalTheory.InfTypeLocal.continuous_infIdele L w).comp (continuous_apply w))
     · funext k
-      have h1 : χ.1 (infDiag k) = 1 := h k
-      unfold infDiag at h1
+      have h1 : χ.1 (Formalism.L2.Host.infDiag k) = 1 := h k
+      unfold Formalism.L2.Host.infDiag at h1
       rw [MonoidHom.finsetProd_apply] at h1
       exact h1
   exact congrFun key u
@@ -273,13 +277,13 @@ theorem finite_order_of_inf_eq_one : ∀ (L : Type) [Field L] [NumberField L] (�
       show χ.1 _ ^ M = 1
       rw [triv_inf χ h, one_pow]
     rw [hu, map_mul, h1, h2, one_mul]
-  have hle : unitIdl L ⊔ (diagUnits L).range ≤ (χ ^ M).1.ker := by
+  have hle : unitIdl L ⊔ (Neutral.B1.diagUnits L).range ≤ (χ ^ M).1.ker := by
     refine sup_le hunit ?_
     rintro _ ⟨k, rfl⟩
     exact (χ ^ M).2.2 k
   have hfi := GlobalTheory.Mem.UnitIndex.finiteIndex_unitIdl_sup L
-  refine ⟨M * (unitIdl L ⊔ (diagUnits L).range).index, Nat.mul_pos hM0 (Nat.pos_of_ne_zero hfi.index_ne_zero), ?_⟩
-  unfold HChar.OrderDvd
+  refine ⟨M * (unitIdl L ⊔ (Neutral.B1.diagUnits L).range).index, Nat.mul_pos hM0 (Nat.pos_of_ne_zero hfi.index_ne_zero), ?_⟩
+  unfold Formalism.L2.Host.HChar.OrderDvd
   rw [pow_mul]
   refine Subtype.ext (MonoidHom.ext fun a => ?_)
   show (χ ^ M).1 a ^ _ = 1
@@ -311,7 +315,7 @@ theorem prod_localIdele_comp (z : ∀ v : HeightOneSpectrum (𝓞 L), (v.adicCom
       if w ∈ F then ((z w : (w.adicCompletion L)ˣ) : w.adicCompletion L) else 1 := by
   classical
   induction F using Finset.induction_on with
-  | empty => exact ⟨rfl, fun w => by simp; rfl⟩
+  | empty => exact ⟨rfl, fun w => by simp⟩
   | insert a F ha ih =>
     rw [Finset.prod_insert ha, Units.val_mul]
     have e1 : ∀ x y : AdeleRing (𝓞 L) L, (x * y).1 = x.1 * y.1 := fun _ _ => rfl
@@ -464,10 +468,14 @@ theorem IsTwist.mul_twist {S : Set ℕ} {ξ ξ' : HChar H.E} (h : IsTwist H S ξ
   obtain ⟨⟨n, hn, ho⟩, ht, hl, hr⟩ := h
   obtain ⟨⟨n', hn', ho'⟩, ht', hl', hr'⟩ := h'
   refine ⟨⟨n * n', Nat.mul_pos hn hn', ?_⟩, ht.mul ht', fun v => HChar.LevelLe.mul (hl v) (hl' v), fun v hv => ?_⟩
-  · unfold HChar.OrderDvd at *
+  · let x : Formalism.L2.Host.HChar H.E := ξ
+    let y : Formalism.L2.Host.HChar H.E := ξ'
+    change (x * y) ^ (n * n') = 1
+    change x ^ n = 1 at ho
+    change y ^ n' = 1 at ho'
     rw [mul_pow, pow_mul, ho, one_pow, one_mul, mul_comm n n', pow_mul, ho', one_pow]
   · by_cases h1 : ξ.UnrAt v
-    · exact hr' v fun h2 => hv (h1.mul h2)
+    · exact hr' v fun h2 => hv (Formalism.L2.Host.HChar.UnrAt.mul h1 h2)
     · exact hr v h1
 
 theorem isTwist_of_isDelta {S : Set ℕ} {p : ℕ} {δ : HChar H.E} (hp : p.Prime) (hs : SplitsC H.E p) (hS : p ∉ S)
