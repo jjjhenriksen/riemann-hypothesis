@@ -24,7 +24,9 @@ lemma nval_neg' {T : CDVR} (e : ℕ) (x : T.Fr) : nval T.V e (-x) = nval T.V e x
 variable (hs : ∀ ζ, SecPt ζ (y ζ))
 
 def liftC (ζ : PtsG G la) : Lc (xplus X E hM) la G.w →+* (hs ζ).T.Fr :=
-  IsLocalization.Away.lift (sec (xplus X E hM) la G.w 0) (S := Lc (xplus X E hM) la G.w) (hs ζ).s0
+  IsLocalization.Away.lift
+    (Formalism.MainNotions.Gaps.EtaleWeightGaps.sec (xplus X E hM) la G.w 0)
+    (S := Lc (xplus X E hM) la G.w) (hs ζ).s0
 
 lemma liftC_alg (ζ : PtsG G la) (r : Rp (xplus X E hM) la G.N) :
     liftC hs ζ (algebraMap (Rp (xplus X E hM) la G.N) (Lc (xplus X E hM) la G.w) r) = (hs ζ).ev r :=
