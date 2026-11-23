@@ -37,7 +37,8 @@ theorem O_RW_injective (LL : FinExt l) : Function.Injective (algebraMap ↥(OL L
 theorem oneT_inj_gen {G : Type} [Group G] [TopologicalSpace G] (LL : FinExt l)
     (T : LocLat G ℚ_[l] ↥LL.1 ↥(OL LL)) :
     Function.Injective (fun t : ↥T.L.T => (1 : RW LL) ⊗ₜ[↥(OL LL)] t) := by
-  have hF : Module.Free ↥(OL LL) ↥T.L.T := T.L.free
+  letI : Module.Free ↥(OL LL) ↥T.L.T := T.L.free
+  letI : Module.Flat ↥(OL LL) ↥T.L.T := Module.Flat.of_free
   have h1 := Module.Flat.rTensor_preserves_injective_linearMap (M := ↥T.L.T)
     (Algebra.linearMap ↥(OL LL) (RW LL)) (O_RW_injective LL)
   have h2 := h1.comp (TensorProduct.lid ↥(OL LL) ↥T.L.T).symm.injective
